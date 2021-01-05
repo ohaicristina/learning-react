@@ -17,10 +17,33 @@ import './index.css'; // this works because of the babel css-loader
 // These are class components, we used these when I was at bevspot
 // We use functional components at Teal so this should be fun.
 // We also use TypeScrip which everyone tells me is the harder way to learn so okay
-class App extends React.Component {
+function isAuthed() {
+    return true
+}
+function isNew() {
+    return true
+}
+
+// React components need to start with an uppercase letter
+// it's how react knows it's a custom element vs a regular html element
+export default class App extends React.Component {
     render() {
-        // Babel makes this work nicey nice
-        return <div>Hello World!</div>
+        const authed = isAuthed()
+        const firstLogin = isNew()
+
+        return (
+            // you can only return one top level element
+            // if you don't need a div, use a react fragment <> stuff </>
+            // this was the first cool new thing i brought to my old team that we could start doing :P
+            <div>
+                <h1>[logo]</h1>
+                {/* JS ternaries, i use these all the time. was introduced to them at bevspot, got really good at them by the end of my time there */}
+                { authed ? <h1>Welcome back!</h1> : <h1>Login to see your dashboard</h1>}
+                { firstLogin &&
+                    <h2>Welcome to your new account!</h2>
+                }
+            </div>
+        )
     }
 }
 
