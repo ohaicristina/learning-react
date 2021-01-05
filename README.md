@@ -1,4 +1,6 @@
-# Notes and Projects while finally sitting down and learn React for real instead of just bumbling around a codebase copying recognizeable code patterns until something works
+# Notes and Projects while finally sitting down and learning React for real instead of just bumbling around a codebase copying recognizeable code patterns until something works
+
+This repo is home to various project files filled with raw, unedited notes and comments to myself as I learn how to actually use React among other things.
 
 ## Learning List
 
