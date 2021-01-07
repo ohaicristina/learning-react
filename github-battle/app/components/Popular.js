@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // abstracting the nav into its own functional component
 function LanguagesNav(props) {
@@ -19,6 +20,13 @@ function LanguagesNav(props) {
             ))}
         </ul>
     )
+}
+
+// proptypes is JS built in type checking
+// we use typescript so this is only slightly relevant
+LanguagesNav.propTypes = {
+    selected: PropTypes.string.isRequired,
+    onUpdateLanguage: PropTypes.func.isRequired,
 }
 
 export default class Popular extends React.Component {
