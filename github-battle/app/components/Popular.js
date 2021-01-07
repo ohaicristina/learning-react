@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { fetchPopularRepos } from '../utils/api';
 
 // abstracting the nav into its own functional component
 function LanguagesNav(props) {
@@ -34,25 +35,58 @@ export default class Popular extends React.Component {
         super(props)
 
         this.state = {
-            selectedLanguage: 'All'
+            selectedLanguage: 'All',
+            repos: null, // we'll know loading will be true if both repos and error are null
+            error: null, // that way you don't need an explicit "loading" state
         }
         this.updateLanguage = this.updateLanguage.bind(this); // makes sure that the context in which `this` is invoked is in the component
+        this.isLoading = this.isLoading.bind(this); // makes sure that the context in which `this` is invoked is in the component
+    }
+
+    componentDidMount() {
+        // this is an API call
+        this.updateLanguage(this.state.selectedLanguage);
     }
 
     updateLanguage(selectedLanguage) {
         this.setState({
-            selectedLanguage
+            selectedLanguage,
+            repos: null,
+            error: null,
         })
+
+        // i am torn between how simple this is and that i was overthinking how fetching data works the whole time
+        // and that i'm honestly still a little confused and this is some sort of devil magic happening
+        // like this state is just a thing we made up but it's somehow working????
+        // it's like how if i think about chemistry too much i'm just like yeah okay sure "atoms" whatever you say
+        fetchPopularRepos(selectedLanguage)
+            .then((repos) => this.setState({
+                repos,
+                error: null,
+            }))
+            .catch(() => {
+                console.warn('Error fetching repos:', error)
+
+                this.setState({
+                    errror: "There was an error fetching the repos"
+                })
+            })
+    }
+    isLoading() {
+        return this.state.repos === null && this.state.error === null;
     }
 
     render() {
-        const { selectedLanguage } = this.state;
+        const { selectedLanguage, repos, error } = this.state;
         return (
             <React.Fragment>
                 <LanguagesNav
                     selected={selectedLanguage}
                     onUpdateLanguage={this.updateLanguage}
                 />
+                {this.isLoading() && <p>Loading...</p>}
+                { error && <p>{error}</p>}
+                { repos && <pre>{JSON.stringify(repos, null, 2)}</pre>}
             </React.Fragment>
         )
     }
