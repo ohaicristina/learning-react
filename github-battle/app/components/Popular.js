@@ -163,6 +163,7 @@ export default class Popular extends React.Component {
         const { selectedLanguage, repos, error } = this.state;
         return (
             <React.Fragment>
+                <Battle />
                 <LanguagesNav
                     selected={selectedLanguage}
                     onUpdateLanguage={this.updateLanguage}
