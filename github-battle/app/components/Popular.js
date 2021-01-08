@@ -36,8 +36,10 @@ export default class Popular extends React.Component {
 
         this.state = {
             selectedLanguage: 'All',
-            repos: null, // we'll know loading will be true if both repos and error are null
-            error: null, // that way you don't need an explicit "loading" state
+            repos: {}, // we're changing this from null to an object so we can more easily cache it in the local state
+            error: null,
+            // we'll know loading will be true if both repos and error are null
+            // that way you don't need an explicit "loading" state
         }
         this.updateLanguage = this.updateLanguage.bind(this); // makes sure that the context in which `this` is invoked is in the component
         this.isLoading = this.isLoading.bind(this); // makes sure that the context in which `this` is invoked is in the component
@@ -51,29 +53,63 @@ export default class Popular extends React.Component {
     updateLanguage(selectedLanguage) {
         this.setState({
             selectedLanguage,
-            repos: null,
             error: null,
         })
 
-        // i am torn between how simple this is and that i was overthinking how fetching data works the whole time
-        // and that i'm honestly still a little confused and this is some sort of devil magic happening
-        // like this state is just a thing we made up but it's somehow working????
-        // it's like how if i think about chemistry too much i'm just like yeah okay sure "atoms" whatever you say
-        fetchPopularRepos(selectedLanguage)
-            .then((repos) => this.setState({
-                repos,
-                error: null,
-            }))
-            .catch(() => {
-                console.warn('Error fetching repos:', error)
-
-                this.setState({
-                    errror: "There was an error fetching the repos"
+        if (!this.state.repos[selectedLanguage]) {
+            // whatever the selectedLanguage is on the new object will be the data we get back from the api
+            fetchPopularRepos(selectedLanguage)
+                .then((data) => {
+                    // instead of passing setState an object, we're passing it a function that takes the current repos state data/properties, and merges it with a new repos object
+                    this.setState(({ repos }) => ({
+                        repos: { // taking the current repos state object
+                            ...repos, // merging it with the new one
+                            [selectedLanguage]: data // now, whatever the selectedLanguage is on the new object, will be the data we get back from the API
+                        }
+                    }))
                 })
-            })
+                .catch(() => {
+                    console.warn('Error fetching repos:', error)
+
+                    this.setState({
+                        errror: "There was an error fetching the repos"
+                    })
+                })
+
+            // old fetchPopularRepos function
+            {/* fetchPopularRepos(selectedLanguage)
+                    .then((repos) => this.setState({
+                        repos, // we don't want to just set the data we get back from the API to the state itself, we want to set it as a property on the repos object
+                        error: null,
+                    }))
+                    .catch(() => {
+                        console.warn('Error fetching repos:', error)
+
+                        this.setState({
+                            errror: "There was an error fetching the repos"
+                        })
+                    }) */}
+        }
     }
     isLoading() {
-        return this.state.repos === null && this.state.error === null;
+        // we need to update this because repos will no longer be null since its an object now
+        // return this.state.repos === null && this.state.error === null;
+        const { selectedLanguage, repos, error } = this.state; // grabbing these from our state, idk why it just clicked for me that you can do this????
+        return !repos[selectedLanguage] && error === null
+        // if repos[selectedLanguage] isn't a thing yet and there's no errors
+
+        // Note on dot notation vs bracket notation
+        // both are used to access properties on an object
+        // dot notation is more common
+        // bracket notation is used with arrays. example:
+        // let pets = ['cat','dog','bunny']
+        // console.log(pets[0]) // same as saying pets.cat
+        // bracket notation is also used with objects like we're doing here
+        // the brackets have fewer limitations because the property identifiers only need to be a string
+        // can have spaces and start strings with numbers, as well as use variables to access 
+        // properties in an object (as long as the var resolves to a string) (this is what we're doing here)
+        // notes from: https://codeburst.io/javascript-quickie-dot-notation-vs-bracket-notation-333641c0f781
+        // from airbnb's style guide: "Always use Dot. And when you want to access object property with a variable, use Bracket"
     }
 
     render() {
@@ -86,7 +122,7 @@ export default class Popular extends React.Component {
                 />
                 {this.isLoading() && <p>Loading...</p>}
                 { error && <p>{error}</p>}
-                { repos && <pre>{JSON.stringify(repos, null, 2)}</pre>}
+                { repos[selectedLanguage] && <pre>{JSON.stringify(repos[selectedLanguage], null, 2)}</pre>}
             </React.Fragment>
         )
     }
