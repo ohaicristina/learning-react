@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaFighterJet, FaTrophy, FaUserFriends } from 'react-icons/fa';
+import { FaFighterJet, FaTimesCircle, FaTrophy, FaUserFriends } from 'react-icons/fa';
 
 function Instructions() {
     return (
@@ -77,22 +77,88 @@ class PlayerInput extends React.Component {
         )
     }
 }
-
 PlayerInput.propTypes = {
     onSubmit: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
 }
 
+function PlayerPreview({ username, onReset, label }) {
+    return (
+        <div className="column player">
+            <h3 className="player-label">{label}</h3>
+            <div className="row bg-light">
+                <div className="player-info">
+                    <img
+                        className="avatar-small"
+                        src={`https://github.com/${username}.png?size=200`}
+                        alt={`Avatar for ${username}`}
+                    />
+                    <a href={`https://github.com/${username}`}>
+                        {username}
+                    </a>
+                </div>
+                <button
+                    className="btn-clear flex-center"
+                    onClick={onReset}
+                >
+                    <FaTimesCircle color='red' size={26} />
+                </button>
+            </div>
+        </div>
+    )
+}
+
+PlayerPreview.propTypes = {
+    username: PropTypes.string.isRequired,
+    onReset: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired
+}
+
 export default class Battle extends React.Component {
-    // this component is for the whole page
-    // if we put all the logic for the player input here, it clutters it up
-    // more appropriate for it to be abstracted out into its own component
-    // so that we can just render it here with props and keep this one simple and focused on the page itself
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            playerOne: null,
+            playerTwo: null,
+        }
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleReset = this.handleReset.bind(this);
+    }
+    // updates the state with the corresponding input submission
+    handleSubmit(id, player) {
+        this.setState({
+            // id = the state we're updating (either playerOne or playerTwo)
+            // player = what to update the state with. in this case the value from the PlayerInput input components
+            [id]: player // this is an ES6 computed property name
+        })
+    }
+    handleReset(id) {
+        this.setState({
+            [id]: null
+        })
+    }
     render() {
+        const { playerOne, playerTwo } = this.state;
+
         return (
             <React.Fragment>
                 <Instructions />
-                <PlayerInput label="Label!" onSubmit={(value) => console.log(value)} />
+                <div className="players-container">
+                    <h1 className="header-lg center-text">Players</h1>
+                    <div className="row space-around">
+                        {playerOne === null ? (
+                            <PlayerInput label="Player One!" onSubmit={(player) => this.handleSubmit('playerOne', player)} />
+                        ) : (
+                                <PlayerPreview username={playerOne} label="Player One!" onReset={() => this.handleReset('playerOne')} />
+                            )}
+                        {playerTwo === null ? (
+                            <PlayerInput label="Player Two!" onSubmit={(player) => this.handleSubmit('playerTwo', player)} />
+                        ) : (
+                                <PlayerPreview username={playerTwo} label="Player Two!" onReset={() => this.handleReset('plaerTwo')} />
+                            )}
+                    </div>
+                </div>
             </React.Fragment>
         )
     }
