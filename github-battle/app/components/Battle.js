@@ -140,6 +140,9 @@ export default class Battle extends React.Component {
             [id]: null
         })
     }
+    // dummy note: re-render means this chunk of code gets re-rendered on the screen
+    // so the reason why the main return chunk is replaced by the if battle === true one
+    // is when this code is rendered, it will check for battle to be true then return that code and stop
     render() {
         const { playerOne, playerTwo, battle } = this.state;
 
