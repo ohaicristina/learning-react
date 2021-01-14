@@ -1,16 +1,42 @@
-import React from 'react';
-import { FaBriefcase, FaCompass, FaUsers, FaUser, FaUserFriends } from 'react-icons/fa';
-import { battle } from '../utils/api';
+import React from 'react'
+import { FaBriefcase, FaCompass, FaUsers, FaUser, FaUserFriends } from 'react-icons/fa'
+import { battle } from '../utils/api'
+import Card from './Card'
+
+function ProfileList({ profile }) {
+    return (
+        <ul className="card-list">
+            <li>
+                <FaUser color='rgb(239, 115, 155)' size={22} />
+                {profile.name}
+            </li>
+            {profile.location &&
+                <li>
+                    <FaCompass color='rgb(114, 115, 255)' size={22} />
+                    {profile.location}
+                </li>
+            }
+            {profile.company &&
+                <li>
+                    <FaBriefcase color='rgb(89, 200, 255)' size={22} />
+                    {profile.location}
+                </li>
+            }
+            <li>
+                <FaUsers color='rgb(89, 200, 255)' size={22} />
+                {profile.followers.toLocaleString()}
+            </li>
+            <li>
+                <FaUserFriends color='rgb164, 185, 193)' size={22} />
+                {profile.following.toLocaleString()}
+            </li>
+        </ul>
+    )
+}
 
 export default class Results extends React.Component {
     constructor(props) {
         super(props)
-
-        // what do we need to know?
-        // who is the winner
-        // who is the loser
-        // any errors
-        // is the request still loading
 
         this.state = {
             winner: null,
@@ -19,14 +45,12 @@ export default class Results extends React.Component {
             loading: true,
         }
     }
-    // when the components mounts, invoke the battle function comparing the user names of player one and player two
     componentDidMount() {
-        const { playerOne, playerTwo } = this.props
+        const { playerOne, playerTwo, onReset } = this.props
 
         battle([playerOne, playerTwo])
             .then((players) => {
                 this.setState({
-                    // winner is ther first item in the players array
                     winner: players[0],
                     loser: players[1],
                     error: null,
@@ -53,94 +77,30 @@ export default class Results extends React.Component {
 
         return (
             <div className="grid space-around container-sm">
-                <div className="card bg-light">
-                    <h4 className="header-lg center-text">
-                        {winner.score === loser.score ? 'Tie' : 'Winner'}
-                    </h4>
-                    <img
-                        className="avatar"
-                        src={winner.profile.avatar_url}
-                        alt={`Avatar for ${winner.profile.login}`}
-                    />
-                    <h4 className="center-text">
-                        Score: {winner.score.toLocaleString()}
-                    </h4>
-                    <h2 className="center-text">
-                        <a href={winner.profile.html_url} className="link">
-                            {winner.profile.login}
-                        </a>
-                    </h2>
-                    <ul className="card-list">
-                        <li>
-                            <FaUser color='rgb(239, 115, 155)' size={22} />
-                            {winner.profile.name}
-                        </li>
-                        {winner.profile.location &&
-                            <li>
-                                <FaCompass color='rgb(114, 115, 255)' size={22} />
-                                {winner.profile.location}
-                            </li>
-                        }
-                        {winner.profile.company &&
-                            <li>
-                                <FaBriefcase color='rgb(89, 200, 255)' size={22} />
-                                {winner.profile.location}
-                            </li>
-                        }
-                        <li>
-                            <FaUsers color='rgb(89, 200, 255)' size={22} />
-                            {winner.profile.followers.toLocaleString()}
-                        </li>
-                        <li>
-                            <FaUserFriends color='rgb164, 185, 193)' size={22} />
-                            {winner.profile.following.toLocaleString()}
-                        </li>
-                    </ul>
-                </div>
-                <div className="card bg-light">
-                    <h4 className="header-lg center-text">
-                        {winner.score === loser.score ? 'Tie' : 'Loser'}
-                    </h4>
-                    <img
-                        className="avatar"
-                        src={loser.profile.avatar_url}
-                        alt={`Avatar for ${loser.profile.login}`}
-                    />
-                    <h4 className="center-text">
-                        Score: {winner.score.toLocaleString()}
-                    </h4>
-                    <h2 className="center-text">
-                        <a href={loser.profile.html_url} className="link">
-                            {loser.profile.login}
-                        </a>
-                    </h2>
-                    <ul className="card-list">
-                        <li>
-                            <FaUser color='rgb(239, 115, 155)' size={22} />
-                            {loser.profile.name}
-                        </li>
-                        {loser.profile.location &&
-                            <li>
-                                <FaCompass color='rgb(114, 115, 255)' size={22} />
-                                {loser.profile.location}
-                            </li>
-                        }
-                        {loser.profile.company &&
-                            <li>
-                                <FaBriefcase color='rgb(89, 200, 255)' size={22} />
-                                {loser.profile.location}
-                            </li>
-                        }
-                        <li>
-                            <FaUsers color='rgb(89, 200, 255)' size={22} />
-                            {loser.profile.followers.toLocaleString()}
-                        </li>
-                        <li>
-                            <FaUserFriends color='rgb164, 185, 193)' size={22} />
-                            {loser.profile.following.toLocaleString()}
-                        </li>
-                    </ul>
-                </div>
+                <Card
+                    header={winner.score === loser.score ? 'Tie' : 'Winner'}
+                    subheader={`Score: ${winner.score.toLocaleString()}`}
+                    avatar={winner.profile.avatar_url}
+                    avatarLink={winner.profile.html_url}
+                    name={winner.profile.login}
+                >
+                    <ProfileList profile={winner.profile} />
+                </Card>
+                <Card
+                    header={winner.score === loser.score ? 'Tie' : 'Loser'}
+                    subheader={` Score: ${winner.score.toLocaleString()}`}
+                    avatar={loser.profile.avatar_url}
+                    avatarLink={loser.profile.html_url}
+                    name={loser.profile.login}
+                >
+                    <ProfileList profile={loser.profile} />
+                </Card>
+                <button
+                    className="dark-btn btn btn-space"
+                    onClick={this.props.onReset}
+                >
+                    Reset Players
+                </button>
             </div>
         )
     }

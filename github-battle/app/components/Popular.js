@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle } from 'react-icons/fa';
-import { fetchPopularRepos } from '../utils/api';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FaUser, FaStar, FaCodeBranch, FaExclamationTriangle } from 'react-icons/fa'
+import { fetchPopularRepos } from '../utils/api'
+import Card from './Card'
 
-// abstracting the nav into its own functional component
 function LanguagesNav(props) {
-    const { selected, onUpdateLanguage } = props; // did this to make sure i understood that it's the same as dowing function LanguagesNav({selected, onUpdateLanguage})
+    const { selected, onUpdateLanguage } = props;
     const languages = ['All', 'JavaScript', 'Ruby', 'CSS', 'Python'];
     return (
         <ul className="flex-center">
@@ -39,37 +39,34 @@ function ReposGrid({ repos }) {
                 const { login, avatar_url } = owner;
 
                 return (
-                    <li key={html_url} className="card bg-light center-text">
-                        <h4 className="header-lg">
-                            #{index + 1}
-                        </h4>
-                        <img className="avatar"
-                            src={avatar_url}
-                            alt={`Avatar for ${login}`}
-                        />
-                        <h2>
-                            <a href={html_url}>{login}</a>
-                        </h2>
-                        <ul className="card-list">
-                            <li>
-                                <FaUser color='rgb(255, 191, 116)' size={22} />
-                                <a href={`https://github.com/${login}`}>
-                                    {login}
-                                </a>
+                    <li key={html_url}>
+                        <Card
+                            header={`#${index + 1}`}
+                            avatar={avatar_url}
+                            avatarLink={html_url}
+                            name={login}
+                        >
+                            <ul className="card-list">
+                                <li>
+                                    <FaUser color='rgb(255, 191, 116)' size={22} />
+                                    <a href={`https://github.com/${login}`}>
+                                        {login}
+                                    </a>
+                                </li>
+                                <li>
+                                    <FaStar color='rgb(255, 215, 0)' size={22} />
+                                    {stargazers_count.toLocaleString()} stars
                             </li>
-                            <li>
-                                <FaStar color='rgb(255, 215, 0)' size={22} />
-                                {stargazers_count.toLocaleString()} stars
+                                <li>
+                                    <FaCodeBranch color='rgb(129, 195, 245)' size={22} />
+                                    {forks.toLocaleString()} forks
                             </li>
-                            <li>
-                                <FaCodeBranch color='rgb(129, 195, 245)' size={22} />
-                                {forks.toLocaleString()} forks
+                                <li>
+                                    <FaExclamationTriangle color='rgb(241, 138, 147)' size={22} />
+                                    {open_issues.toLocaleString()} open
                             </li>
-                            <li>
-                                <FaExclamationTriangle color='rgb(241, 138, 147)' size={22} />
-                                {open_issues.toLocaleString()} open
-                            </li>
-                        </ul>
+                            </ul>
+                        </Card>
                     </li>
                 )
             })}
@@ -153,7 +150,7 @@ export default class Popular extends React.Component {
         // console.log(pets[0]) // same as saying pets.cat
         // bracket notation is also used with objects like we're doing here
         // the brackets have fewer limitations because the property identifiers only need to be a string
-        // can have spaces and start strings with numbers, as well as use variables to access 
+        // can have spaces and start strings with numbers, as well as use variables to access
         // properties in an object (as long as the var resolves to a string) (this is what we're doing here)
         // notes from: https://codeburst.io/javascript-quickie-dot-notation-vs-bracket-notation-333641c0f781
         // from airbnb's style guide: "Always use Dot. And when you want to access object property with a variable, use Bracket"
@@ -169,8 +166,8 @@ export default class Popular extends React.Component {
                     onUpdateLanguage={this.updateLanguage}
                 />
                 {this.isLoading() && <p>Loading...</p>}
-                { error && <p className="center-text error">{error}</p>}
-                { repos[selectedLanguage] && <ReposGrid repos={repos[selectedLanguage]} />}
+                {error && <p className="center-text error">{error}</p>}
+                {repos[selectedLanguage] && <ReposGrid repos={repos[selectedLanguage]} />}
             </React.Fragment>
         )
     }

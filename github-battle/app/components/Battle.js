@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FaFighterJet, FaTimesCircle, FaTrophy, FaUserFriends } from 'react-icons/fa';
-import Results from './results';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FaFighterJet, FaTimesCircle, FaTrophy, FaUserFriends } from 'react-icons/fa'
+import Results from './Results'
 
 function Instructions() {
     return (
@@ -147,7 +147,17 @@ export default class Battle extends React.Component {
         const { playerOne, playerTwo, battle } = this.state;
 
         if (battle === true) {
-            return <Results playerOne={playerOne} playerTwo={playerTwo} />
+            return (
+                <Results
+                    playerOne={playerOne}
+                    playerTwo={playerTwo}
+                    onReset={() => this.setState({
+                        playerOne: null,
+                        playerTwo: null,
+                        battle: false
+                    })}
+                />
+            )
         }
 
         return (
