@@ -21,7 +21,7 @@ export default function Card(props) {
                 src={avatar}
                 alt={`Avatar for ${name}`}
             />
-            { subeader &&
+            { subheader &&
                 <h4 className="center-text">
                     {subheader}
                 </h4>

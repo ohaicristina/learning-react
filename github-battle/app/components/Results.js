@@ -2,6 +2,7 @@ import React from 'react'
 import { FaBriefcase, FaCompass, FaUsers, FaUser, FaUserFriends } from 'react-icons/fa'
 import { battle } from '../utils/api'
 import Card from './Card'
+import Loading from './Loading'
 
 function ProfileList({ profile }) {
     return (
@@ -67,7 +68,7 @@ export default class Results extends React.Component {
         const { winner, loser, error, loading } = this.state;
 
         if (loading === true) {
-            return <p>Loading</p>
+            return <Loading />
         }
         if (error) {
             return (
@@ -76,32 +77,34 @@ export default class Results extends React.Component {
         }
 
         return (
-            <div className="grid space-around container-sm">
-                <Card
-                    header={winner.score === loser.score ? 'Tie' : 'Winner'}
-                    subheader={`Score: ${winner.score.toLocaleString()}`}
-                    avatar={winner.profile.avatar_url}
-                    avatarLink={winner.profile.html_url}
-                    name={winner.profile.login}
-                >
-                    <ProfileList profile={winner.profile} />
-                </Card>
-                <Card
-                    header={winner.score === loser.score ? 'Tie' : 'Loser'}
-                    subheader={` Score: ${winner.score.toLocaleString()}`}
-                    avatar={loser.profile.avatar_url}
-                    avatarLink={loser.profile.html_url}
-                    name={loser.profile.login}
-                >
-                    <ProfileList profile={loser.profile} />
-                </Card>
+            <React.Fragment>
+                <div className="grid space-around container-sm">
+                    <Card
+                        header={winner.score === loser.score ? 'Tie' : 'Winner'}
+                        subheader={`Score: ${winner.score.toLocaleString()}`}
+                        avatar={winner.profile.avatar_url}
+                        avatarLink={winner.profile.html_url}
+                        name={winner.profile.login}
+                    >
+                        <ProfileList profile={winner.profile} />
+                    </Card>
+                    <Card
+                        header={winner.score === loser.score ? 'Tie' : 'Loser'}
+                        subheader={` Score: ${winner.score.toLocaleString()}`}
+                        avatar={loser.profile.avatar_url}
+                        avatarLink={loser.profile.html_url}
+                        name={loser.profile.login}
+                    >
+                        <ProfileList profile={loser.profile} />
+                    </Card>
+                </div>
                 <button
                     className="dark-btn btn btn-space"
                     onClick={this.props.onReset}
                 >
                     Reset Players
                 </button>
-            </div>
+            </React.Fragment>
         )
     }
 }
