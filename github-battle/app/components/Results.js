@@ -3,8 +3,10 @@ import { FaBriefcase, FaCompass, FaUsers, FaUser, FaUserFriends } from 'react-ic
 import { battle } from '../utils/api'
 import Card from './Card'
 import Loading from './Loading'
+import Tooltip from './Tooltip'
 
-function ProfileList({ profile }) {
+function ProfileList({ profile }) { // needed to refactor this into a class component when we had the tooltip in this component because we needed to add state to it. See Tooltip.js
+    // you could also use hooks
     return (
         <ul className="card-list">
             <li>
@@ -13,14 +15,18 @@ function ProfileList({ profile }) {
             </li>
             {profile.location &&
                 <li>
-                    <FaCompass color='rgb(114, 115, 255)' size={22} />
-                    {profile.location}
+                    <Tooltip text="User's location">
+                        <FaCompass color='rgb(114, 115, 255)' size={22} />
+                        {profile.location}
+                    </Tooltip>
                 </li>
             }
             {profile.company &&
                 <li>
-                    <FaBriefcase color='rgb(89, 200, 255)' size={22} />
-                    {profile.location}
+                    <Tooltip text="User's company">
+                        <FaBriefcase color='rgb(89, 200, 255)' size={22} />
+                        {profile.location}
+                    </Tooltip>
                 </li>
             }
             <li>
@@ -90,7 +96,7 @@ export default class Results extends React.Component {
                     </Card>
                     <Card
                         header={winner.score === loser.score ? 'Tie' : 'Loser'}
-                        subheader={` Score: ${winner.score.toLocaleString()}`}
+                        subheader={` Score: ${loser.score.toLocaleString()}`}
                         avatar={loser.profile.avatar_url}
                         avatarLink={loser.profile.html_url}
                         name={loser.profile.login}
