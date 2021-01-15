@@ -1,5 +1,6 @@
 import React from 'react'
 
+// This is a render prop
 export default class Hover extends React.Component {
     constructor(props) {
         super(props)
@@ -30,6 +31,7 @@ export default class Hover extends React.Component {
                 onMouseOut={this.mouseOut}
                 onMouseOver={this.mouseOver}
             >
+                {/* Could also use a prop instead of children - up to whatever you prefer */}
                 {/* `children` goes from representing an element to representing a function */}
                 {this.props.children(this.state.hovering)}
             </div>
