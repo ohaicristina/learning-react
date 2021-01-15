@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Higher Order Component
 // this component is just a function that returns another component
 // takes the original component and dresses it up in it's special logic outfit
 // then spits out the original component with the new logic outfit on it

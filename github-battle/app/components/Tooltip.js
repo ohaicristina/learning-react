@@ -1,5 +1,6 @@
-import React, { Children } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import Hover from './Hover'
 
 const styles = {
     container: {
@@ -67,25 +68,24 @@ const styles = {
 //     }
 // }
 
-function Tooltip({ text, children, hovering }) {
+// changing this to use Render Props
+// avoids naming collisions
+export default function Tooltip({ text, children }) {
     return (
-        <div style={styles.container}>
-            { hovering === true &&
-                <div style={styles.tooltip}>{text}</div>
-            }
-            {children}
-        </div>
+        <Hover>
+            {/* The actual Tooltip component gets rendered instead of the old `<WithHover>` component from withHover() */}
+            {(hovering) => (
+                <div style={styles.container}>
+                    {hovering === true &&
+                        <div style={styles.tooltip}>{text}</div>
+                    }
+                    {children}
+                </div>
+            )}
+        </Hover>
     )
-
 }
 
 Tooltip.propTypes = {
     text: PropTypes.string.isRequired,
-    hovering: PropTypes.bool.isRequired
 }
-
-export default withHover(Tooltip)
-// higher order component is a component
-// takes in another component
-// returns a new component
-// the new component can render the original component
