@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// building this component with the idea of making it customizeable and reusable
+// building this component with the idea of making it customizable and reusable
 
 const styles = {
     content: {

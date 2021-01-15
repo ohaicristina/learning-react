@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Popular from './components/Popular'; // import the component(s) we're using on the page
+import Popular from './components/Popular';
 import Battle from './components/Battle';
 import { ThemeProvider } from './contexts/theme'
 import Nav from './components/Nav'
+import { BrowserRouter as Router, Route } from 'react-router-dom' // "x as y" is renaming the component/creating an alias
 
 export default class App extends React.Component {
     constructor(props) {
@@ -21,18 +22,18 @@ export default class App extends React.Component {
     }
     render() {
         return (
-            // value is what's available to any component in the app that uses Consumer
-            // now we can set the theme anywhere without needing to use props
-            <ThemeProvider value={this.state}>
-                {/* class of 'light' or 'dark' depending on the theme state */}
-                <div className={this.state.theme}>
-                    <div className="container">
-                        <Nav />
-                        <Battle />
-                        {/* <Popular /> */}
+            <Router> {/* Using context under the hood */}
+                <ThemeProvider value={this.state}>
+                    <div className={this.state.theme}>
+                        <div className="container">
+                            <Nav />
+                            <Route exact path="/" component={Popular} />
+                            <Route path="/battle" component={Battle} />
+                            {/* webpack dev server needs instructions to handle router stuff and do the redirects */}
+                        </div>
                     </div>
-                </div>
-            </ThemeProvider>
+                </ThemeProvider>
+            </Router>
         )
     }
 }

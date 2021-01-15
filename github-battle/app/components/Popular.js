@@ -120,7 +120,7 @@ export default class Popular extends React.Component {
                     console.warn('Error fetching repos:', error)
 
                     this.setState({
-                        errror: "There was an error fetching the repos"
+                        error: "There was an error fetching the repos"
                     })
                 })
 
@@ -164,12 +164,11 @@ export default class Popular extends React.Component {
         const { selectedLanguage, repos, error } = this.state;
         return (
             <React.Fragment>
-                <Battle />
                 <LanguagesNav
                     selected={selectedLanguage}
                     onUpdateLanguage={this.updateLanguage}
                 />
-                {this.isLoading() && <p><Loading text="fetching repos" /></p>}
+                {this.isLoading() && <Loading text="fetching repos" />}
                 {error && <p className="center-text error">{error}</p>}
                 {repos[selectedLanguage] && <ReposGrid repos={repos[selectedLanguage]} />}
             </React.Fragment>
